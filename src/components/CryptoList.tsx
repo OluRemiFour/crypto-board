@@ -1,5 +1,7 @@
+
 import { ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useCrypto } from '@/contexts/CryptoContext';
 
 const fetchCryptoData = async () => {
   const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=false');
@@ -10,11 +12,20 @@ const fetchCryptoData = async () => {
 };
 
 const CryptoList = () => {
+  const { selectedCrypto, setSelectedCrypto } = useCrypto();
   const { data: cryptos, isLoading } = useQuery({
     queryKey: ['cryptos'],
     queryFn: fetchCryptoData,
     refetchInterval: 30000, // Refetch every 30 seconds
   });
+
+  const handleCryptoClick = (crypto: any) => {
+    setSelectedCrypto({
+      id: crypto.id,
+      symbol: crypto.symbol,
+      name: crypto.name
+    });
+  };
 
   if (isLoading) {
     return <div className="glass-card rounded-lg p-6 animate-pulse">Loading...</div>;
@@ -35,7 +46,13 @@ const CryptoList = () => {
           </thead>
           <tbody>
             {cryptos?.map((crypto) => (
-              <tr key={crypto.symbol} className="border-t border-secondary">
+              <tr 
+                key={crypto.symbol} 
+                className={`border-t border-secondary cursor-pointer hover:bg-secondary/10 transition-colors ${
+                  selectedCrypto.id === crypto.id ? 'bg-primary/10' : ''
+                }`}
+                onClick={() => handleCryptoClick(crypto)}
+              >
                 <td className="py-4">
                   <div className="flex items-center gap-2">
                     <img src={crypto.image} alt={crypto.name} className="w-8 h-8 rounded-full" />
