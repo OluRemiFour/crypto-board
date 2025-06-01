@@ -26,7 +26,7 @@ const MarketStats = () => {
           5.1%
         </span>
       </div>
-      
+      {/*  */}
       <div className="glass-card p-6 rounded-lg">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-medium text-muted-foreground">BTC Dominance</h3>
